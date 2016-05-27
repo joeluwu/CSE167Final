@@ -1,0 +1,52 @@
+newmtl material_1
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 0.882353 0.686275
+Ks 0.14902 0.14902 0.14902
+Km 0
+map_Bump /Maps/sand_mtl1_bumpamt.jpg
+
+newmtl material_1_Terrain_1
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+Km 0
+map_Ka /Maps/Terrain 1_mtl1_ambicol.jpg
+map_Kd /Maps/ttr1.jpg
+map_Bump /Maps/Terrain 1_mtl1_bumpamt.jpg
+
+newmtl default
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/f1.jpg
+
+newmtl default_leaves
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/Doc4b2.jpg
+
+newmtl default_stems
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/1arw.jpg
+

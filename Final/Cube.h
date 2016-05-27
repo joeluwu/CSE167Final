@@ -20,6 +20,9 @@ public:
 	void update();
     void scale(float);
 	void spin(float);
+    
+    unsigned char* loadPPM(const char* filename, int& width, int& height);
+    void loadTexture();
 };
 
 #endif

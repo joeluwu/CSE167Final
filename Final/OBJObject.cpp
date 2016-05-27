@@ -12,7 +12,6 @@ OBJObject::OBJObject(const char *filepath)
     this->angle = 0.0f;
     parse(filepath);
 
-
     ///////////////////////////////////////////////////////
     // Create buffers/arrays
     glGenVertexArrays(1, &VAO);     // Vertex Array Object, ties together a multitude of buffers
@@ -28,7 +27,7 @@ OBJObject::OBJObject(const char *filepath)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), &indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexVert.size() * sizeof(int), &indexVert[0], GL_STATIC_DRAW);
     
     glBindBuffer(GL_ARRAY_BUFFER, NBO);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
@@ -50,7 +49,7 @@ void OBJObject::parse(const char *filepath)
     float x,y,z;     // vertex coordinates
     float r,g,b;     // vertex color
     glm::vec3 vertex, color, norm;
-    
+    glm::vec2 uv;
     FILE* fp = fopen(filepath,"rb");
 
     if (fp == NULL) {
@@ -66,19 +65,23 @@ void OBJObject::parse(const char *filepath)
  
         if ( strcmp( type, "v" ) == 0){
 
-            fscanf(fp, "%f %f %f %f %f %f", &x, &y, &z, &r, &g, &b);
+            fscanf(fp, "%f %f %f", &x, &y, &z);
 
             vertex.x = x;
             vertex.y = y;
             vertex.z = z;
 
-            color.x = x;
-            color.y = y;
-            color.z = z;
             
             vertices.push_back(vertex);
-            colors.push_back(color);
+           
+        } else if ( strcmp( type, "vt" ) == 0 ){
             
+            fscanf(fp, "%f %f", &x, &y);
+            
+            uv.x = x;
+            uv.y = y;
+            
+            uvec.push_back( uv );
         } else if ( strcmp( type, "vn" ) == 0 ){
 
             fscanf(fp, "%f %f %f", &x, &y, &z);
@@ -91,14 +94,22 @@ void OBJObject::parse(const char *filepath)
             
         } else if ( strcmp(type, "f") == 0) {
             
-            unsigned int vert[3], norms[3];
-            // f v1//n1 v2//n2 v3//n3
-            // v1, v2, v3 are the indices of the vertices and n1, n2, n3 are the indices of the normals
-            fscanf(fp, "%d//%d %d//%d %d//%d", &vert[0], &norms[0], &vert[1], &norms[1], &vert[2], &norms[2]);
+            unsigned int vert[3], text[3], norms[3];
+
+            fscanf(fp, "%d/%d/%d %d/%d/%d %d/%d/%d", &vert[0], &text[0], &norms[0],
+                   &vert[1], &text[1], &norms[1], &vert[2], &text[2], &norms[2]);
             
-            indices.push_back( vert[0] - 1 );
-            indices.push_back( vert[1] - 1 );
-            indices.push_back( vert[2] - 1 );
+            indexVert.push_back( vert[0] - 1 );
+            indexVert.push_back( vert[1] - 1);
+            indexVert.push_back( vert[2] - 1);
+            
+            indexUv.push_back( text[0] -1);
+            indexUv.push_back( text[1] -1);
+            indexUv.push_back( text[2] -1);
+        
+            indexNorm.push_back( norms[0] -1);
+            indexNorm.push_back( norms[1] -1);
+            indexNorm.push_back( norms[2] -1);
         }
     }
 
@@ -130,36 +141,7 @@ void OBJObject::draw(GLuint shaderProgram)
     glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, (int)indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void OBJObject::draw(GLuint shaderProg, glm::mat4 localMatrix)
-{
-    // Calculate combination of the model (toWorld), view (camera inverse), and perspective matrices
-    glm::mat4 MVP = Window::P * Window::V * localMatrix;
-    glm::mat4 model = localMatrix;
-    glm::mat4 camera = Window::V;
-    
-    // We need to calculate this because as of GLSL version 1.40 (OpenGL 3.1, released March 2009),
-    // gl_ModelViewProjectionMatrix has been removed from the language. The user is expected to supply
-    // this matrix to the shader when using modern OpenGL.
-    GLuint MatrixID = glGetUniformLocation(shaderProg, "MVP");
-    GLuint CamID = glGetUniformLocation(shaderProg, "camera");
-    GLuint ModelID = glGetUniformLocation(shaderProg, "model");
-    
-    // create a eye vector to reference lights from
-    glm::vec3 eye = glm::vec3(0.0f, 0.0f, 20.0f);
-    
-    // pass in the camera position
-    glUniform3fv(glGetUniformLocation(shaderProg, "viewPos"), 1, &eye[0]);
-    
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(CamID, 1, GL_FALSE, &camera[0][0]);
-    glUniformMatrix4fv(ModelID, 1, GL_FALSE, &model[0][0]);
-    
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, (int)indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (int)indexVert.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

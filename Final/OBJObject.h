@@ -13,9 +13,10 @@ class OBJObject
 //private:
 public:
     
-    std::vector<unsigned int> indices;
+    std::vector<unsigned int> indexVert, indexUv, indexNorm;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colors;
+    std::vector<glm::vec2> uvec;
     std::vector<glm::vec3> normals;
     
     glm::mat4 toWorld;

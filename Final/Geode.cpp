@@ -16,5 +16,5 @@ void Geode::update(glm::mat4 C) {
 
 void Geode::draw(GLuint shader) {
     
-    toDraw->draw(shader, M);
+    //toDraw->draw(shader, M);
 }
