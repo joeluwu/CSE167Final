@@ -59,17 +59,17 @@ Cube::Cube()
     
     
     unsigned char * image;
-    image = loadPPM("bluecloud_rt.ppm", width, height);
+    image = loadPPM("graycloud_rt.ppm", width, height);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    image = loadPPM("bluecloud_lf.ppm", width, height);
+    image = loadPPM("graycloud_lf.ppm", width, height);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    image = loadPPM("bluecloud_up.ppm", width, height);
+    image = loadPPM("graycloud_up.ppm", width, height);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    image = loadPPM("bluecloud_dn.ppm", width, height);
+    image = loadPPM("graycloud_dn.ppm", width, height);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    image = loadPPM("bluecloud_bk.ppm", width, height);
+    image = loadPPM("graycloud_bk.ppm", width, height);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    image = loadPPM("bluecloud_ft.ppm", width, height);
+    image = loadPPM("graycloud_ft.ppm", width, height);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -47,10 +47,10 @@ void OBJObject::parse(const char *filepath)
     // parse the OBJ file, Populate the face indices, vertices, 
     // normals vectors and faces with the OBJ Object data
     float x,y,z;     // vertex coordinates
-    float r,g,b;     // vertex color
-    glm::vec3 vertex, color, norm;
+
+    glm::vec3 vertex, norm;
     glm::vec2 uv;
-    FILE* fp = fopen(filepath,"rb");
+    FILE* fp = fopen(filepath,"r");
 
     if (fp == NULL) {
         cerr << "error loading file" << endl;
@@ -65,26 +65,26 @@ void OBJObject::parse(const char *filepath)
  
         if ( strcmp( type, "v" ) == 0){
 
-            fscanf(fp, "%f %f %f", &x, &y, &z);
+            fscanf(fp, "%f %f %f\n", &x, &y, &z);
 
             vertex.x = x;
             vertex.y = y;
             vertex.z = z;
-
             
             vertices.push_back(vertex);
            
         } else if ( strcmp( type, "vt" ) == 0 ){
             
-            fscanf(fp, "%f %f", &x, &y);
+            fscanf(fp, "%f %f\n", &x, &y);
             
             uv.x = x;
             uv.y = y;
             
             uvec.push_back( uv );
+            
         } else if ( strcmp( type, "vn" ) == 0 ){
 
-            fscanf(fp, "%f %f %f", &x, &y, &z);
+            fscanf(fp, "%f %f %f\n", &x, &y, &z);
 
             norm.x = x;
             norm.y = y;
@@ -96,10 +96,10 @@ void OBJObject::parse(const char *filepath)
             
             unsigned int vert[3], text[3], norms[3];
 
-            fscanf(fp, "%d/%d/%d %d/%d/%d %d/%d/%d", &vert[0], &text[0], &norms[0],
+            fscanf(fp, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vert[0], &text[0], &norms[0],
                    &vert[1], &text[1], &norms[1], &vert[2], &text[2], &norms[2]);
             
-            indexVert.push_back( vert[0] - 1 );
+            indexVert.push_back( vert[0] - 1);
             indexVert.push_back( vert[1] - 1);
             indexVert.push_back( vert[2] - 1);
             
@@ -113,11 +113,96 @@ void OBJObject::parse(const char *filepath)
         }
     }
 
+    loadMaterial("wS free terrain 018/WS free terrain 018.mtl");
+    
     // read normal data accordingly
     fclose(fp);  
 }
 
-void OBJObject::draw(GLuint shaderProgram) 
+/*---------------------------------------------*/
+
+bool OBJObject::loadMaterial(string sFullMtlFileName)
+{
+//    // For now, we'll just look for ambient texture, i.e. line that begins with map_Ka
+//    FILE* fp = fopen(sFullMtlFileName.c_str(), "rt");
+//    
+//    if(fp == NULL)return false;
+//    
+//    char line[255];
+//    
+//    while(fgets(line, 255, fp))
+//    {
+////        stringstream ss(line);
+////        string sType;
+////        ss >> sType;
+////        if(sType == "map_Ka")
+////        {
+////            string sLine = line;
+////            // Take the rest of line as texture name, remove newline character from end
+////            int from = sLine.find("map_Ka")+6+1;
+////            string sTextureName = sLine.substr(from, ESZ(sLine)-from-1);
+////            // Texture should be in the same directory as material
+////            tAmbientTexture.loadTexture2D(getDirectoryPath(sFullMtlFileName)+sTextureName, true);
+////            tAmbientTexture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_NEAREST_MIPMAP);
+////            break;
+////        }
+//    }
+//    fclose(fp);
+
+//        // Counters
+//        int m = 0;
+//        int d = 0;
+//        int s = 0;
+//        
+//        // Open MTL file
+//        ifstream inMTL;
+//        inMTL.open(sFullMtlFileName);
+//    
+//        if(!inMTL.good())
+//        {
+//            cout << "ERROR OPENING MTL FILE" << endl;
+//            exit(1);
+//        }
+//        
+//        // Read MTL file
+//        while(!inMTL.eof())
+//        {
+//            string line;
+//            getline(inMTL, line);
+//            string type = line.substr(0,2);
+//            
+//            // Names
+//            if(type.compare("ne") == 0)
+//            {
+//                // 1
+//                // Extract token
+//                string l = "newmtl ";
+//                materials[m] = line.substr(l.size());
+//                m++;
+//            }
+//            
+//            // 2
+//            // Diffuses
+//            else if(type.compare("Kd") == 0)
+//            {
+//                // Implementation challenge!
+//            }
+//            
+//            // 3
+//            // Speculars
+//            else if(type.compare("Ks") == 0)
+//            {
+//                // Implementation challenge!
+//            }
+//        }
+//        
+//        // Close MTL file
+//        inMTL.close();
+    
+    return true;
+}
+
+void OBJObject::draw(GLuint shaderProgram)
 {
     // Calculate combination of the model (toWorld), view (camera inverse), and perspective matrices
     glm::mat4 MVP = Window::P * Window::V * toWorld;

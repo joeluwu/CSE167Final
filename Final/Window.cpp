@@ -12,15 +12,16 @@ GLint skyboxShader;
 
 //========================[ Objects ]==========================//
 Cube * skyBox;
-OBJObject * bear;
+OBJObject * boat;
+OBJObject * boat2;
 OBJObject * island;
 //===============[ Default camera parameters ]================//
 glm::vec3 eye_pos;
 glm::vec3 look_dir;
 glm::mat4 matrix;
 
-glm::vec3 cam_pos(0.0f, 100.0f, 350.0f);		// e  | Position of camera
-glm::vec3 cam_look_at(0.0f, -100.0f, 0.0f);	// d  | This is where the camera looks at
+glm::vec3 cam_pos(0.0f, 50.0f, 500.0f);		// e  | Position of camera
+glm::vec3 cam_look_at(0.0f, -20.0f, 0.0f);	// d  | This is where the camera looks at
 glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 bool clicked = false;
@@ -43,18 +44,26 @@ glm::vec3 dirLight_dir(0, -30, -30);
 void Window::initialize_objects()
 {
     skyBox = new Cube();
-    //skyBox->scale(40);
-    bear = new OBJObject(("bear.obj"));
-    island = new OBJObject("Island/dream_island.obj");
-    island->translate(0.0f, -100.0f, 0.0f);
-    
+    skyBox->scale(20);
+    boat = new OBJObject(("wS free terrain 018/boat.obj"));
+    boat2 = new OBJObject(("wS free terrain 018/boat.obj"));
+
+    island = new OBJObject("wS free terrain 018/WS free terrain 018.obj");
+
+    island->scale(100);
+    island->translate(0.0f, -70.0f, 0.0f);
+    boat->scale(0.6);
+    boat->translate(40.0f, 25.0f, 180.0f);
+    boat2->scale(0.6);
+    boat2->translate(-80.0f, 5.0f, 200.0f);
     shaderProgram = LoadShaders("shader.vert", "shader.frag");
     skyboxShader = LoadShaders("skyShader.vert", "skyShader.frag");
 }
 
 void Window::clean_up()
 {
-    delete(bear);
+    delete(boat);
+    delete(boat2);
     delete(skyBox);
     delete(island);
 
@@ -177,7 +186,9 @@ void Window::display_callback(GLFWwindow* window)
     glUniform3fv(materialID, 1, (GLfloat*) &dirLight_dir );
     
     island->draw(shaderProgram);
-    
+    boat->draw(shaderProgram);
+    boat2->draw(shaderProgram);
+
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 	// Swap buffers

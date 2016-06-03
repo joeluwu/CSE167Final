@@ -15,7 +15,6 @@ public:
     
     std::vector<unsigned int> indexVert, indexUv, indexNorm;
     std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> colors;
     std::vector<glm::vec2> uvec;
     std::vector<glm::vec3> normals;
     
@@ -29,6 +28,7 @@ public:
 	void parse(const char* );
 	void draw(GLuint);
     void draw(GLuint, glm::mat4);
+    bool loadMaterial(std::string sFullMtlFileName);
     void update();
 
 	void spin(float);
